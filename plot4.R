@@ -1,7 +1,6 @@
-# This function creates a bar plot for total PM25 emissions in Baltimore
-# by year and source
+# This function creates a bar plot for total emissions by year
 
-mkPlot3 <- function() {
+mkPlot4 <- function() {
   
   # We will make use of the "data.table" library, so we need
   # to load it (if it is already loaded, nothing will happen)
@@ -13,11 +12,31 @@ mkPlot3 <- function() {
   # Load the data from the RDS file, and convert it to 
   # a data table
   summary <- data.table(readRDS("summarySCC_PM25.rds"))
+  sources <- data.table(readRDS("Source_Classification_Code.rds"))
+  
+  # EI.Sector denotes all coal types (anthracite, lignite, etc) as "Coal",
+  # so, it is the best chance to get all coal-related sources
+  sector    <- grepl("[cC]oal", sources$EI.Sector)
+  
+  # SCC.Level.One describes the type of usage, and is a good source
+  # to discriminate for coal usage (combustion)
+  combustion <- grepl("[cC]omb", sources$SCC.Level.One)
+  
+  
+  # TO DO:
+  #
+  # -- subset sources & combustion with (sector & combustion)
+  # -- sum subset
+  # -- plot
+  
+  
+  
+  
   
   # Sum the emission values in Baltimore for each year using the features
   # of the data.table. Another data table with year and
   # TotalEmission columns will be stored in totals.
-  totals <- summary[,list(TotalEmission=sum(Emissions)/1e3),
+  totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3),
                     by=c('year','type')]
   totals$yearFactor <- factor(totals$year)
   
@@ -33,13 +52,10 @@ mkPlot3 <- function() {
   # Open a PNG file and replot. Since no size is required by the
   # project specification, we make bigger than default to be
   # able to see data more clearly
-  png(filename="plot3.png", width=800, heigh=600)
+  png(filename="plot4.png", width=800, heigh=600)
   print(p)
   dev.off()
-  
-  # close PNG device
-  #dev.off()
-  
+    
   # Show a nice label saying we are done :)
   "Plotting done"  
   

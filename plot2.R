@@ -1,4 +1,4 @@
-# This function creates a bar plot for total emissions by year
+# This function creates a bar plot for total PM25 emissions in Baltimore by year
 
 mkPlot2 <- function() {
   

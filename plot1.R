@@ -1,4 +1,4 @@
-# This function creates a bar plot for total emissions by year
+# This function creates a bar plot for total PM25 emissions in USA by year
 
 mkPlot1 <- function() {
   
