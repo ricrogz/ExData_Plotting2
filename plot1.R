@@ -13,7 +13,7 @@ mkPlot1 <- function() {
   # Sum the emission values for each year using the features
   # of the data.table. Another data table with year and
   # TotalEmission columns will be stored in totals.
-  totals <- data[,list(TotalEmission=sum(Emissions)/1e6), by='year']
+  totals <- summary[,list(TotalEmission=sum(Emissions)/1e6), by='year']
   
   # Create a simple bar plot by year. The X axis will be drawn,
   # but the Y axis won't.

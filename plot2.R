@@ -13,8 +13,11 @@ mkPlot2 <- function() {
   # Sum the emission values in Baltimore for each year using the features
   # of the data.table. Another data table with year and
   # TotalEmission columns will be stored in totals.
-  totals <- data[fips == "24510",list(TotalEmission=sum(Emissions)/1e3), by='year']
+  totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3), by='year']
   
+  # Convert years to a factor
+  totals$year <- factor(totals$year)
+    
   # Create a simple bar plot by year. The X axis will be drawn,
   # but the Y axis won't.
   barplot(totals$TotalEmission, names.arg = totals$year, xlab = "year",
