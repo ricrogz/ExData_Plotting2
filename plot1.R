@@ -19,7 +19,7 @@ mkPlot1 <- function() {
   # but the Y axis won't.
   barplot(totals$TotalEmission, names.arg = totals$year, xlab = "year",
           ylab="millions of tons", axis.lty = 1, axes = F, ylim=c(0,8),
-          main = bquote("Total " ~ PM[2.5] ~ " Emissions"))
+          main = bquote("Total " ~ PM[2.5] ~ " Emissions in USA"))
   
   # Create Y axis on the left. Put ticks at intervals
   # of 0.5 millins. We let R decide where to put labels.

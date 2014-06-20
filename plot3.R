@@ -29,15 +29,10 @@ mkPlot3 <- function() {
     scale_x_continuous(breaks=unique(totals$year))
   print(p)
   
-  # Open a PNG file and replot. Since no size is required by the
+  # Save to PNG file. Since no specific size is required by the
   # project specification, we make bigger than default to be
   # able to see data more clearly
-  png(filename="plot3.png", width=800, heigh=600)
-  print(p)
-  dev.off()
-  
-  # close PNG device
-  #dev.off()
+  ggsave(plot=p, filename="plot3.png", height=800, width=600)  
   
   # Show a nice label saying we are done :)
   "Plotting done"  

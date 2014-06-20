@@ -15,18 +15,11 @@ mkPlot2 <- function() {
   # TotalEmission columns will be stored in totals.
   totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3), by='year']
   
-  # Convert years to a factor
-  totals$year <- factor(totals$year)
-    
-  # Create a simple bar plot by year. The X axis will be drawn,
-  # but the Y axis won't.
+  
+  # Create a simple bar plot by year.
   barplot(totals$TotalEmission, names.arg = totals$year, xlab = "year",
           ylab="thousands of tons", axis.lty = 1, axes = T, ylim=c(0,4),
           main = bquote("Total " ~ PM[2.5] ~ " Emissions in Baltimore"))
-  
-  # Create Y axis on the left. Put ticks at intervals
-  # of 0.5 millins. We let R decide where to put labels.
-  #axis(2, seq(0.0,7.5,0.5))
   
   # Fit data to a linear model, and plot a trendline
   trend <- lm(TotalEmission ~ year, totals)
