@@ -15,6 +15,8 @@ mkPlot2 <- function() {
   # TotalEmission columns will be stored in totals.
   totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3), by='year']
   
+  # Delete summary to free memory
+  rm(summary)
   
   # Create a simple bar plot by year.
   barplot(totals$TotalEmission, names.arg = totals$year, xlab = "year",

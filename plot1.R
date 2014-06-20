@@ -14,6 +14,9 @@ mkPlot1 <- function() {
   # of the data.table. Another data table with year and
   # TotalEmission columns will be stored in totals.
   totals <- summary[,list(TotalEmission=sum(Emissions)/1e6), by='year']
+
+  # Delete summary to free memory
+  rm(summary)
   
   # Create a simple bar plot by year. The X axis will be drawn,
   # but the Y axis won't.

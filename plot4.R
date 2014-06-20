@@ -46,11 +46,11 @@ mkPlot4 <- function() {
   totals <- summary[SCC %in% coalSCC, list(CoalEmission=sum(Emissions)/1e3),
                     by=c('stCode','year')]
 
-  # Add a factor with the years for the filling and legends
-  totals$yearFactor <- factor(totals$year)
-  
   # Delete summary to free memory
   rm(summary)
+                    
+  # Add a factor with the years for the filling and legends
+  totals$yearFactor <- factor(totals$year)
   
   # Create a lots of bar plots by year, grouped in 10 columns.
   # Each plot will have a different scale, since emission ranges
@@ -59,15 +59,15 @@ mkPlot4 <- function() {
   # shown in the legend.
   p <- ggplot(totals, aes(x=year,y=CoalEmission)) + theme(legend.title=element_blank()) + 
     facet_wrap( ~ stCode, ncol=10, scales="free_y") +
-    geom_bar(aes(fill=yearFactor), name="year", stat="identity") + 
+    geom_bar(aes(fill=yearFactor), stat="identity") + 
     xlab("") + ylab("thousands of tons") + 
-    ggtitle(bquote("Coal Combustion related " ~ PM[2.5] ~ 
-                     " emissions across USA by year")) +
+    ggtitle("Coal Combustion related PM[2.5] 
+            emissions across USA by year") +
     geom_smooth(method="lm", se = F, col="black") +
     scale_x_continuous(breaks=unique(totals$year),labels=NULL)
   
   # Save to PNG file and replot. We need a lot of space, there is much to plot
-  ggsave(plot=p, filename="plot4.png", height=6, width=10, dpi = 120, units="in")  
+  ggsave(plot=p, filename="plot4.png", height=9, width=15, dpi = 120, units="in")  
     
   # Show a nice label saying we are done :)
   "Plotting done"  

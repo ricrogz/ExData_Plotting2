@@ -34,17 +34,22 @@ mkPlot5 <- function() {
   # scaling them to thousands of tons.
   totals <- summary[fips == "24510" & SCC %in% vehicleSCC, 
                     list(VehicleEmission=sum(Emissions)/1e3), by='year']
-    
+
+  # Delete summary to free memory
+  rm(summary)
+                    
+  # Add a factor with the years for the filling and legends
+  totals$yearFactor <- factor(totals$year)
+                    
   # Create a single bar plot by year.
-  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) +
-    geom_bar(aes(fill=year), stat="identity") + xlab("year") + ylab("thousands of tons") +
-    ggtitle(bquote("Motor Vehicle related " ~ PM[2.5] ~ " emissions in Baltimore by year")) +
+  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) + theme(legend.title=element_blank()) + 
+    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + ylab("thousands of tons") +
+    ggtitle("Motor Vehicle related\n\r PM[2.5] emissions in Baltimore by year") +
     geom_smooth(method="lm", se = F, col="black") + guides(fill=F) +
     scale_x_continuous(breaks=unique(totals$year))
-  print(p)
   
   # Save to PNG file.
-  ggsave(plot=p, filename="plot5.png", height=480, width=480)  
+  ggsave(plot=p, filename="plot5.png", height=4, width=4, dpi = 120, units="in")  
     
   # Show a nice label saying we are done :)
   "Plotting done"  

@@ -35,24 +35,30 @@ mkPlot6 <- function() {
   totals <- summary[(fips == "24510" | fips == "06037") & SCC %in% vehicleSCC, 
                     list(VehicleEmission=sum(Emissions)/1e3), by=c('year','fips')]
 
+  # Delete summary to free memory
+  rm(summary)
+                    
+  # Add a factor with the years for the filling and legends
+  totals$yearFactor <- factor(totals$year)                    
+                    
   # Add a "city" column, giving "Baltimore" as default value.
   totals$city <- "Baltimore"
   # Change city value to "Los Angeles" for the appropriate rows
   totals$city[totals$fips == "06037"] <- "Los Angeles"
   
   # Create a single bar plot by year.
-  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) + facet_grid(. ~ city) +
-    geom_bar(aes(fill=year), stat="identity") + xlab("year") + ylab("thousands of tons") +
-    ggtitle(bquote("Motor Vehicle related " ~ PM[2.5] ~ 
-            " emissions in Baltimore and Los Angeles by year")) +
+  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) +
+    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + ylab("thousands of tons") +
+    facet_wrap( ~ city, ncol=2, scales="free_y") +
+    ggtitle("Motor Vehicle related PM[2.5] emissions\n in Baltimore and Los Angeles by year") +
     geom_smooth(method="lm", se = F, col="black") + guides(fill=F) +
-   scale_x_continuous(breaks=unique(totals$year))
-  print(p)
+   scale_x_continuous(breaks=unique(totals$year)) +
+   theme(legend.title=element_blank())
   
   # Save to PNG file. Since no specific size is required by the
   # project specification, we make bigger than default to be
   # able to see data more clearly
-  ggsave(plot=p, filename="plot6.png", height=800, width=600)  
+  ggsave(plot=p, filename="plot6.png", height=4, width=7, dpi = 120, units="in")    
     
   # Show a nice label saying we are done :)
   "Plotting done"  
