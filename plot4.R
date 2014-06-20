@@ -1,6 +1,6 @@
 # This function creates a bar plot for emissions due to coal combustion by year
-# across USA. There are far too many counties in the data to plot them all in a
-# graph, so we will be grouping them by state.
+# across USA. There are far too many counties in the summary data to plot them
+# all in a single graph, so we will be grouping them by state.
 #
 # To accomplish this, we have used information from
 # http://www.epa.gov/envirofw/html/codes/state.html
@@ -16,20 +16,19 @@ mkPlot4 <- function() {
   # This time we will also need the "ggplot2" package
   library(ggplot2)
   
-  # Load the data from the RDS file, and convert it to 
-  # a data table
+  # Load the data from the RDS files into data tables
   summary   <- data.table(readRDS("summarySCC_PM25.rds"))
   sources   <- data.table(readRDS("Source_Classification_Code.rds"))
   
-  # We want the fips codes in character format, to match them with the summary
-  statefips <- data.table(read.csv("StateFips.csv", colClasses=c("character","factor","character")))
+  # We want the fips codes in character format, to merge them with the summary
+  statefips <- data.table(read.csv("StateFips.csv", colClasses=c("factor","factor","factor")))
   
   # EI.Sector denotes all coal types (anthracite, lignite, etc) as "Coal",
   # so, it is the best chance to get all coal-related sources
   sector     <- grepl("[cC]oal", sources$EI.Sector)
 
   # SCC.Level.One describes the type of usage, and is a good source
-  # to discriminate by coal usage (combustion)
+  # to discriminate by coal usage (combustion denoted as "Comb")
   combustion <- grepl("[cC]omb", sources$SCC.Level.One)
   
   # Get SCCs related to coal combustion
@@ -56,13 +55,14 @@ mkPlot4 <- function() {
   # Each plot will have a different scale, since emission ranges
   # Change much from one state to another. Also, no x tick labels
   # are written, but bars for each year have different colors,
-  # shown in the legend.
-  p <- ggplot(totals, aes(x=year,y=CoalEmission)) + theme(legend.title=element_blank()) + 
+  # as shown in the legend.
+  p <- ggplot(totals, aes(x=year,y=CoalEmission)) + 
+    theme(legend.title=element_blank()) + 
     facet_wrap( ~ stCode, ncol=10, scales="free_y") +
     geom_bar(aes(fill=yearFactor), stat="identity") + 
     xlab("") + ylab("thousands of tons") + 
-    ggtitle("Coal Combustion related PM[2.5] 
-            emissions across USA by year") +
+    ggtitle(expression("Coal Combustion related" ~ PM[2.5] ~
+              "emissions across USA states by year")) +
     geom_smooth(method="lm", se = F, col="black") +
     scale_x_continuous(breaks=unique(totals$year),labels=NULL)
   

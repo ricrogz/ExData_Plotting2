@@ -10,8 +10,7 @@ mkPlot5 <- function() {
   # This time we will also need the "ggplot2" package
   library(ggplot2)
   
-  # Load the data from the RDS file, and convert it to 
-  # a data table
+  # Load the data from the RDS files into data.tables
   summary <- data.table(readRDS("summarySCC_PM25.rds"))
   sources <- data.table(readRDS("Source_Classification_Code.rds"))
   
@@ -41,10 +40,12 @@ mkPlot5 <- function() {
   # Add a factor with the years for the filling and legends
   totals$yearFactor <- factor(totals$year)
                     
-  # Create a single bar plot by year.
-  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) + theme(legend.title=element_blank()) + 
-    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + ylab("thousands of tons") +
-    ggtitle("Motor Vehicle related\n\r PM[2.5] emissions in Baltimore by year") +
+  # Create a single bar plot by year with linear trend lines.
+  p <- ggplot(totals, aes(x=year,y=VehicleEmission)) +
+    theme(legend.title=element_blank()) + 
+    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") +
+    ylab(expression(PM[2.5] * ", thousands of tons")) +
+    ggtitle("Motor Vehicle related emissions\nin Baltimore by year") +
     geom_smooth(method="lm", se = F, col="black") + guides(fill=F) +
     scale_x_continuous(breaks=unique(totals$year))
   

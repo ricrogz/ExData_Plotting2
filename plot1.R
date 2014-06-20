@@ -19,16 +19,16 @@ mkPlot1 <- function() {
   rm(summary)
   
   # Create a simple bar plot by year. The X axis will be drawn,
-  # but the Y axis won't.
+  # but the Y axis won't (yet).
   barplot(totals$TotalEmission, names.arg = totals$year, xlab = "year",
           ylab="millions of tons", axis.lty = 1, axes = F, ylim=c(0,8),
           main = bquote("Total " ~ PM[2.5] ~ " Emissions in USA"))
   
   # Create Y axis on the left. Put ticks at intervals
-  # of 0.5 millins. We let R decide where to put labels.
+  # of 0.5 millions and let R decide where to put labels.
   axis(2, seq(0.0,7.5,0.5))
   
-  # Fit data to a linear model, and plot a trendline
+  # Fit data to a linear model, and plot the trendline
   trend <- lm(TotalEmission ~ year, totals)
   lines(predict(trend))
   

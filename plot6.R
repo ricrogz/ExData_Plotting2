@@ -1,5 +1,5 @@
 # This function creates a bar plot for motor vehicle related emissions
-#  by year in Baltimore
+#  in Baltimore vs Los Angeles by year
 
 mkPlot6 <- function() {
   
@@ -10,8 +10,7 @@ mkPlot6 <- function() {
   # This time we will also need the "ggplot2" package
   library(ggplot2)
   
-  # Load the data from the RDS file, and convert it to 
-  # a data table
+  # Load the data from the RDS files into data.tables
   summary <- data.table(readRDS("summarySCC_PM25.rds"))
   sources <- data.table(readRDS("Source_Classification_Code.rds"))
   
@@ -46,14 +45,16 @@ mkPlot6 <- function() {
   # Change city value to "Los Angeles" for the appropriate rows
   totals$city[totals$fips == "06037"] <- "Los Angeles"
   
-  # Create a single bar plot by year.
+  # Create a bar plot by year with linear trend lines both for
+  # Baltimore and LA. Allow different scales from both.
   p <- ggplot(totals, aes(x=year,y=VehicleEmission)) +
-    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + ylab("thousands of tons") +
+    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") +
+    ylab(expression(PM[2.5] * ", thousands of tons")) +
     facet_wrap( ~ city, ncol=2, scales="free_y") +
-    ggtitle("Motor Vehicle related PM[2.5] emissions\n in Baltimore and Los Angeles by year") +
+    ggtitle("Motor Vehicle related emissions\n in Baltimore and Los Angeles by year") +
     geom_smooth(method="lm", se = F, col="black") + guides(fill=F) +
-   scale_x_continuous(breaks=unique(totals$year)) +
-   theme(legend.title=element_blank())
+    scale_x_continuous(breaks=unique(totals$year)) +
+    theme(legend.title=element_blank())
   
   # Save to PNG file. Since no specific size is required by the
   # project specification, we make bigger than default to be

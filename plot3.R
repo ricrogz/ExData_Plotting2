@@ -14,29 +14,30 @@ mkPlot3 <- function() {
   # a data table
   summary <- data.table(readRDS("summarySCC_PM25.rds"))
   
-  # Sum the emission values in Baltimore for each year using the features
-  # of the data.table. Another data table with year and
-  # TotalEmission columns will be stored in totals.
+  # Sum the emission values in Baltimore for each year and type
+  # using the features of the data.tables. Another data table
+  # with year, type and TotalEmission columns will be stored in totals.
   totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3),
                     by=c('year','type')]
 
   # Delete summary to free memory
   rm(summary)
                     
-  # Add a factor with the years for the filling and legends
+  # Add a factor with the years for bar coloring and legends
   totals$yearFactor <- factor(totals$year)
   
   # Create a simple bar plot by year. The X axis will be drawn,
-  # but the Y axis won't.
+  # but the Y axis won't (yet).
   p <- ggplot(totals, aes(x=year,y=TotalEmission)) + facet_grid(. ~ type) +
-    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + ylab("thousands of tons") +
-    ggtitle("PM[2.5] Emissions in Baltimore per type and year") +
+    geom_bar(aes(fill=yearFactor), stat="identity") + xlab("year") + 
+    ylab("thousands of tons") +
+    ggtitle(expression(PM[2.5] ~ "Emissions in Baltimore per type and year")) +
     geom_smooth(method="lm", se = F, col="black") + guides(fill=F) +
     scale_x_continuous(breaks=unique(totals$year)) +
     theme(legend.title=element_blank())
   
   # Save to PNG file. Since no specific size is required by the
-  # project specification, we make bigger than default to be
+  # project specification, we make it bigger than default to be
   # able to see data more clearly
   ggsave(plot=p, filename="plot3.png", height=4, width=7, dpi = 120, units="in")  
   

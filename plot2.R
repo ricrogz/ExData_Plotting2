@@ -11,8 +11,8 @@ mkPlot2 <- function() {
   summary <- data.table(readRDS("summarySCC_PM25.rds"))
   
   # Sum the emission values in Baltimore for each year using the features
-  # of the data.table. Another data table with year and
-  # TotalEmission columns will be stored in totals.
+  # of the data.table scaling the results to thousands of tons. Another
+  # data table with year and TotalEmission columns will be stored in totals.
   totals <- summary[fips == "24510",list(TotalEmission=sum(Emissions)/1e3), by='year']
   
   # Delete summary to free memory
@@ -23,7 +23,7 @@ mkPlot2 <- function() {
           ylab="thousands of tons", axis.lty = 1, axes = T, ylim=c(0,4),
           main = bquote("Total " ~ PM[2.5] ~ " Emissions in Baltimore"))
   
-  # Fit data to a linear model, and plot a trendline
+  # Fit data to a linear model, and plot the trendline
   trend <- lm(TotalEmission ~ year, totals)
   lines(predict(trend)) 
   
